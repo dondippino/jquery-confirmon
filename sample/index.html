@@ -9,30 +9,34 @@
         <link rel="stylesheet" type="text/css" href="../jquery.confirmon.css"/>
         <script>
             $(function() {
-                $('#button_1').confirmOn('click', function() {
-                    $(this).remove();
+                $('#button_1').confirmOn('click', function(e, confirmed) {
+                    if(confirmed) { // Clicked yes
+                        $(this).remove();
+                    } else { // Clicked no
+                        $('#msg_button_1').fadeIn();
+                    }
                 });
                 
                 $('#button_2').confirmOn({
                     questionText: 'This action cannot be undone, are you sure?',
                     textYes: 'Yes, I\'m sure',
                     textNo: 'No, I\'m not sure'
-                },'click', function() {
-                    $(this).remove();
+                },'click', function(e, confirmed) {
+                    if(confirmed) $(this).remove();
                 });
                 
-                $('#div_1').confirmOn('mouseover', function() {
-                    $(this).html('Handler called');
+                $('#div_1').confirmOn('mouseover', function(e, confirmed) {
+                    if(confirmed) $(this).html('Handler called');
                 });
                 
-                $('#div_2').confirmOn('mouseover', {arg1: new Date()}, function(e) {
-                    $(this).html('Data argument: '+e.data.arg1);
+                $('#div_2').confirmOn('mouseover', {arg1: new Date()}, function(e, confirmed) {
+                    if (confirmed) $(this).html('Data argument: '+e.data.arg1);
                 });
                 
                 $('#button_3').confirmOn({
                     classPrepend: 'myprefix'
-                },'click', function() {
-                    $(this).remove();
+                },'click', function(e, confirmed) {
+                    if(confirmed) $(this).remove();
                 });
                 
             });
@@ -42,13 +46,15 @@
     <body>
         <div class="contentwrapper">
             <h1>jQuery confirmOn plugin sample</h1>
-            <p>A confirmation box pops up when you click one of the buttons or hover over the blue boxes. If you click <i>no</i>, nothing happens. If you
-            click <i>yes</i>, the provided handler in .confirmOn() is called.</p>
+            <p>A confirmation box pops up when you click one of the buttons or hover over the blue boxes. If you
+                click <i>yes</i> or <i>no</i>, the provided handler in .confirmOn() is called with a 'confirmed' argument, this argument
+                tells you which button the user has clicked.
             <table>
                 <tr>
                     <td>Normal button</td>
                     <td>
                         <button id="button_1">Delete me</button>
+                        <div id="msg_button_1">*** You've answered 'no' ***</div>
                     </td>
                 </tr>
                 <tr>
